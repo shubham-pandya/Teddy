@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Teddy ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+@font-face {
+    font-family: 'Cassandra';
+    src: url('CassandraPersonalUseRegular-3BjG.ttf') format('truetype');
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Mulish', sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ffdde1,#ee9ca7);
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:1000px;
+    padding:60px 50px;
+    border-radius:28px;
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(15px);
+    box-shadow:0 25px 60px rgba(0,0,0,0.15);
+    text-align:center;
+    color:#000;
+    animation:fadeIn 1.5s ease;
+}
+
+.title{
+    font-family:'Cassandra';
+    font-size:4rem;
+    margin-bottom:15px;
+}
+
+.subtitle{
+    font-size:1.1rem;
+    margin-bottom:40px;
+    line-height:1.6;
+}
+
+#puzzle{
+    display:grid;
+    gap:6px;
+    margin:0 auto;
+}
+
+.tile{
+    background-image:url('us.jpg');
+    background-repeat:no-repeat;
+    border-radius:14px;
+    cursor:grab;
+    transition:transform .25s ease, box-shadow .25s ease;
+}
+
+.tile:active{
+    transform:scale(1.05);
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+
+#final{
+    display:none;
+    animation:fadeIn 2s ease forwards;
+}
+
+.big-love{
+    font-family:'Cassandra';
+    font-size:5rem;
+    margin-bottom:20px;
+}
+
+.promise{
+    max-width:750px;
+    margin:0 auto;
+    line-height:1.9;
+    font-size:1.1rem;
+    font-weight:400;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.heart{
+    position:fixed;
+    font-size:18px;
+    animation:float 7s linear infinite;
+    opacity:.4;
+}
+
+@keyframes float{
+    0%{transform:translateY(100vh);opacity:0}
+    50%{opacity:1}
+    100%{transform:translateY(-10vh);opacity:0}
+}
+
+@media(max-width:768px){
+    .title{font-size:2.8rem}
+    .big-love{font-size:3.2rem}
+    .promise{font-size:1rem}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card" id="gameScreen">
+    <div class="title">My Teddy ❤️</div>
+    <div class="subtitle">
+        Every beautiful love story has a beginning…  
+        Ours began on <strong>September 3</strong>,  
+        the day you said “I love you” first  
+        and unknowingly became my forever.  
+
+        <br><br>
+        Drag & drop to rebuild our memory.
+    </div>
+
+    <div id="puzzle"></div>
+</div>
+
+<div class="card" id="final">
+    <div class="big-love">I Love You, My Teddy ❤️</div>
+
+    <div class="promise">
+
+        September 3 will always live inside my heart —  
+        the day your words wrapped around my soul  
+        and made everything feel right.  
+
+        <br><br>
+
+        Loving you feels soft, safe, and certain.  
+        It feels like home.  
+
+        <br><br>
+
+        I promise to stand beside you when life is beautiful  
+        and when it feels overwhelming.  
+
+        I promise to protect your heart  
+        and treat your love as the most precious gift I’ve ever received.  
+
+        I promise to grow with you,  
+        dream with you,  
+        build with you,  
+        and never let the world pull us apart.  
+
+        <br><br>
+
+        When you feel weak, I will be your strength.  
+        When you doubt yourself, I will remind you who you are.  
+        When life tests us, I will choose you — again and again.  
+
+        <br><br>
+
+        You are my calm in chaos.  
+        My safest place.  
+        My forever decision.  
+
+        And in this lifetime,  
+        it will always be you. ❤️
+    </div>
+</div>
+
+<script>
+
+const puzzle=document.getElementById("puzzle");
+let dragged;
+const rows=3, cols=3;
+
+const img=new Image();
+img.src="us.jpg";
+
+img.onload=function(){
+    const ratio=img.width/img.height;
+    const maxWidth=500;
+    const width=maxWidth;
+    const height=maxWidth/ratio;
+
+    puzzle.style.width=width+"px";
+    puzzle.style.height=height+"px";
+    puzzle.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+
+    const tileWidth=width/cols;
+    const tileHeight=height/rows;
+
+    for(let i=0;i<rows*cols;i++){
+        const tile=document.createElement("div");
+        tile.classList.add("tile");
+        tile.draggable=true;
+        tile.dataset.index=i;
+
+        tile.style.width=tileWidth+"px";
+        tile.style.height=tileHeight+"px";
+        tile.style.backgroundSize=`${width}px ${height}px`;
+        tile.style.backgroundPosition=
+            `${-(i%cols)*tileWidth}px ${-Math.floor(i/cols)*tileHeight}px`;
+
+        tile.addEventListener("dragstart",()=>dragged=tile);
+        tile.addEventListener("dragover",e=>e.preventDefault());
+        tile.addEventListener("drop",function(){
+            if(dragged!==this){
+                let tempPos=dragged.style.backgroundPosition;
+                let tempIndex=dragged.dataset.index;
+
+                dragged.style.backgroundPosition=this.style.backgroundPosition;
+                dragged.dataset.index=this.dataset.index;
+
+                this.style.backgroundPosition=tempPos;
+                this.dataset.index=tempIndex;
+
+                checkWin();
+            }
+        });
+
+        puzzle.appendChild(tile);
+    }
+
+    shuffle();
+};
+
+function shuffle(){
+    for(let i=puzzle.children.length;i>=0;i--){
+        puzzle.appendChild(puzzle.children[Math.random()*i|0]);
+    }
+}
+
+function checkWin(){
+    const tiles=[...puzzle.children];
+    for(let i=0;i<tiles.length;i++){
+        if(tiles[i].dataset.index!=i) return;
+    }
+    document.getElementById("gameScreen").style.display="none";
+    document.getElementById("final").style.display="block";
+    createHearts();
+}
+
+function createHearts(){
+    setInterval(()=>{
+        const heart=document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerHTML="❤️";
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.fontSize=(Math.random()*20+16)+"px";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),7000);
+    },400);
+}
+
+</script>
+
+</body>
+</html>
