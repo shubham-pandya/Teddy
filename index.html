@@ -196,82 +196,6 @@ body{
 </div>
 
 <script>
-// Puzzle logic (unchanged)
-const puzzle=document.getElementById("puzzle");
-let dragged=null;
-const rows=3, cols=3;
-
-const img=new Image();
-img.src="us.jpg";
-
-img.onload=function(){
-    const ratio=img.width/img.height;
-    const width=Math.min(window.innerWidth*0.8,320);
-    const height=width/ratio;
-
-    puzzle.style.width=width+"px";
-    puzzle.style.height=height+"px";
-    puzzle.style.gridTemplateColumns=`repeat(${cols},1fr)`;
-
-    const tileWidth=width/cols;
-    const tileHeight=height/rows;
-
-    for(let i=0;i<rows*cols;i++){
-        const tile=document.createElement("div");
-        tile.classList.add("tile");
-        tile.dataset.index=i;
-
-        tile.style.width=tileWidth+"px";
-        tile.style.height=tileHeight+"px";
-        tile.style.backgroundSize=`${width}px ${height}px`;
-        tile.style.backgroundPosition=
-            `${-(i%cols)*tileWidth}px ${-Math.floor(i/cols)*tileHeight}px`;
-
-        tile.addEventListener("pointerdown",()=>{
-            dragged=tile;
-            tile.classList.add("dragging");
-        });
-
-        tile.addEventListener("pointerup",function(e){
-            tile.classList.remove("dragging");
-            const dropTarget=document.elementFromPoint(e.clientX,e.clientY);
-
-            if(dropTarget && dropTarget.classList.contains("tile") && dragged!==dropTarget){
-                let tempPos=dragged.style.backgroundPosition;
-                let tempIndex=dragged.dataset.index;
-
-                dragged.style.backgroundPosition=dropTarget.style.backgroundPosition;
-                dragged.dataset.index=dropTarget.dataset.index;
-
-                dropTarget.style.backgroundPosition=tempPos;
-                dropTarget.dataset.index=tempIndex;
-
-                checkWin();
-            }
-            dragged=null;
-        });
-
-        puzzle.appendChild(tile);
-    }
-
-    shuffle();
-};
-
-function shuffle(){
-    for(let i=puzzle.children.length;i>=0;i--){
-        puzzle.appendChild(puzzle.children[Math.random()*i|0]);
-    }
-}
-
-function checkWin(){
-    const tiles=[...puzzle.children];
-    for(let i=0;i<tiles.length;i++){
-        if(tiles[i].dataset.index!=i) return;
-    }
-    document.getElementById("gameScreen").style.display="none";
-    document.getElementById("final").style.display="block";
-}
-
 // Hearts animation
 const heartsContainer = document.querySelector('.hearts');
 function createHeart() {
@@ -283,12 +207,94 @@ function createHeart() {
     heart.style.height = heart.style.width;
     heartsContainer.appendChild(heart);
 
-    setTimeout(() => {
-        heart.remove();
-    }, 10000);
+    setTimeout(() => { heart.remove(); }, 10000);
+}
+setInterval(createHeart, 300);
+
+// Puzzle logic
+const puzzle = document.getElementById("puzzle");
+let dragged = null;
+const rows = 3, cols = 3;
+const currentOrder = [];
+
+const img = new Image();
+img.src = "us.jpg";
+
+img.onload = function() {
+    const ratio = img.width / img.height;
+    const width = Math.min(window.innerWidth * 0.8, 320);
+    const height = width / ratio;
+
+    puzzle.style.width = width + "px";
+    puzzle.style.height = height + "px";
+    puzzle.style.gridTemplateColumns = `repeat(${cols},1fr)`;
+
+    const tileWidth = width / cols;
+    const tileHeight = height / rows;
+
+    for(let i=0; i<rows*cols; i++){
+        const tile = document.createElement("div");
+        tile.classList.add("tile");
+        tile.dataset.index = i;
+        currentOrder.push(i);
+
+        tile.style.width = tileWidth + "px";
+        tile.style.height = tileHeight + "px";
+        tile.style.backgroundSize = `${width}px ${height}px`;
+        tile.style.backgroundPosition =
+            `${-(i % cols) * tileWidth}px ${-Math.floor(i / cols) * tileHeight}px`;
+
+        tile.addEventListener("pointerdown", () => {
+            dragged = tile;
+            tile.classList.add("dragging");
+        });
+
+        tile.addEventListener("pointerup", (e) => {
+            tile.classList.remove("dragging");
+            const dropTarget = document.elementFromPoint(e.clientX, e.clientY);
+            if(dropTarget && dropTarget.classList.contains("tile") && dragged!==dropTarget){
+                // Swap positions in DOM
+                const draggedPos = Array.from(puzzle.children).indexOf(dragged);
+                const targetPos = Array.from(puzzle.children).indexOf(dropTarget);
+                puzzle.insertBefore(dragged, targetPos > draggedPos ? dropTarget.nextSibling : dropTarget);
+                
+                // Swap in currentOrder
+                const temp = currentOrder[draggedPos];
+                currentOrder[draggedPos] = currentOrder[targetPos];
+                currentOrder[targetPos] = temp;
+
+                checkWin();
+            }
+            dragged = null;
+        });
+
+        puzzle.appendChild(tile);
+    }
+
+    shuffle();
+};
+
+function shuffle(){
+    const children = Array.from(puzzle.children);
+    for(let i=children.length-1; i>0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        puzzle.appendChild(children[j]);
+    }
+
+    // Update currentOrder to match shuffled DOM
+    const shuffled = Array.from(puzzle.children);
+    for(let i=0; i<shuffled.length; i++){
+        currentOrder[i] = parseInt(shuffled[i].dataset.index);
+    }
 }
 
-setInterval(createHeart, 300);
+function checkWin(){
+    for(let i=0; i<currentOrder.length; i++){
+        if(currentOrder[i] != i) return;
+    }
+    document.getElementById("gameScreen").style.display="none";
+    document.getElementById("final").style.display="block";
+}
 </script>
 </body>
 </html>
