@@ -3,128 +3,278 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine's Surprise</title>
+<title>For My Teddy ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    background: #ffe6f0;
-    overflow-x: hidden;
-  }
+@font-face {
+    font-family: 'Cassandra';
+    src: url('CassandraPersonalUseRegular-3BjG.ttf') format('truetype');
+}
 
-  h1, p {
-    text-align: center;
-    color: #ff0066;
-    text-shadow: 1px 1px 5px #fff;
-  }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
-  h1 {
-    font-size: 3em;
-    margin-top: 50px;
-  }
+body{
+    font-family:'Mulish', sans-serif;
+    background:linear-gradient(180deg,#ffd6e0,#ff9eb5);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px 15px;
+    overflow-x:hidden;
+    position:relative;
+}
 
-  p {
-    font-size: 1.5em;
-    margin: 20px;
-  }
+/* Hearts animation */
+.hearts{
+    position:fixed;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    pointer-events:none;
+    z-index:0;
+    overflow:hidden;
+}
 
-  .hearts {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    overflow: hidden;
-    top: 0;
-    left: 0;
-    z-index: -1;
-  }
+.heart{
+    position:absolute;
+    width:30px;
+    height:30px;
+    background:red;
+    transform:rotate(-45deg);
+    animation:float 7s linear infinite;
+    z-index:0;
+}
 
-  .heart {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background: red;
-    transform: rotate(-45deg);
-    animation: float 7s linear infinite;
-  }
+.heart::before,
+.heart::after{
+    content:"";
+    position:absolute;
+    width:30px;
+    height:30px;
+    background:red;
+    border-radius:50%;
+}
 
-  .heart::before,
-  .heart::after {
-    content: "";
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background: red;
-    border-radius: 50%;
-  }
+.heart::before{ top:-15px; left:0; }
+.heart::after{ left:15px; top:0; }
 
-  .heart::before {
-    top: -15px;
-    left: 0;
-  }
+@keyframes float{
+    0%{ transform:translateY(100vh) rotate(-45deg) scale(1); opacity:0; }
+    50%{ opacity:1; }
+    100%{ transform:translateY(-10vh) rotate(45deg) scale(0.8); opacity:0; }
+}
 
-  .heart::after {
-    left: 15px;
-    top: 0;
-  }
+/* Card styling */
+.card{
+    width:100%;
+    max-width:500px;
+    background:white;
+    border-radius:25px;
+    padding:35px 20px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.12);
+    text-align:center;
+    color:#000;
+    z-index:1; /* Above hearts */
+    position:relative;
+}
 
-  @keyframes float {
-    0% { transform: translateY(100vh) rotate(-45deg) scale(1); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateY(-10vh) rotate(45deg) scale(0.8); opacity: 0; }
-  }
+.title{
+    font-family:'Cassandra';
+    font-size:2.4rem;
+    margin-bottom:15px;
+    color:#000;
+}
 
-  .puzzle-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
+.subtitle{
+    font-size:0.95rem;
+    line-height:1.6;
+    margin-bottom:25px;
+    color:#000;
+}
 
-  .puzzle-btn {
-    font-size: 1.5em;
-    padding: 15px 25px;
-    background: #ff66aa;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  }
+#puzzle{
+    display:grid;
+    gap:3px;
+    margin:0 auto 10px auto;
+}
 
-  .puzzle-btn:hover {
-    transform: scale(1.1);
-    background: #ff3399;
-  }
+.tile{
+    background-image:url('us.jpg');
+    background-repeat:no-repeat;
+    border-radius:12px;
+    transition:transform .2s ease;
+    touch-action:none;
+}
 
-  .message {
-    display: none;
-    margin-top: 50px;
-  }
+.tile.dragging{
+    opacity:0.6;
+    transform:scale(1.05);
+}
 
+#final{
+    display:none;
+    animation:fadeIn 1.5s ease forwards;
+}
+
+.big-love{
+    font-family:'Cassandra';
+    font-size:2.8rem;
+    margin-bottom:15px;
+    color:#000;
+}
+
+.promise{
+    font-size:0.95rem;
+    line-height:1.8;
+    color:#000;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:translateY(0)}
+}
 </style>
 </head>
+
 <body>
 
 <div class="hearts"></div>
 
-<div class="puzzle-container">
-  <h1>💌 Solve the Puzzle to See Your Surprise! 💌</h1>
-  <button class="puzzle-btn">Click Me!</button>
+<div class="card" id="gameScreen">
+    <div class="title">My Teddy ❤️</div>
 
-  <div class="message">
-    <h1>Happy Valentine's Day 💖</h1>
-    <p>Shubham loves you forever 💕</p>
-  </div>
+    <div class="subtitle">
+        Our love began on <strong>September 3</strong> —  
+        the day you said “I love you” first  
+        and changed my world forever.  
+
+        <br><br>
+        Slide the pieces back into place,  
+        just like we fit perfectly together.
+    </div>
+
+    <div id="puzzle"></div>
+</div>
+
+<div class="card" id="final">
+    <div class="big-love">I Love You ❤️</div>
+
+    <div class="promise">
+        September 3 will always live inside my heart.  
+        The day your words wrapped around my soul  
+        and made everything feel certain.  
+
+        <br><br>
+
+        I promise to protect your heart gently.  
+        I promise to grow beside you.  
+        I promise to stand with you in every storm  
+        and celebrate every joy.  
+
+        <br><br>
+
+        When life feels heavy, I’ll be your strength.  
+        When you doubt yourself, I’ll remind you who you are.  
+        When the world tests us, I will choose you —  
+        every single time.  
+
+        <br><br>
+
+        You are my calm.  
+        My safest place.  
+        My forever. ❤️
+    </div>
 </div>
 
 <script>
-  const heartsContainer = document.querySelector('.hearts');
+// Puzzle logic (unchanged)
+const puzzle=document.getElementById("puzzle");
+let dragged=null;
+const rows=3, cols=3;
 
-  function createHeart() {
+const img=new Image();
+img.src="us.jpg";
+
+img.onload=function(){
+    const ratio=img.width/img.height;
+    const width=Math.min(window.innerWidth*0.8,320);
+    const height=width/ratio;
+
+    puzzle.style.width=width+"px";
+    puzzle.style.height=height+"px";
+    puzzle.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+
+    const tileWidth=width/cols;
+    const tileHeight=height/rows;
+
+    for(let i=0;i<rows*cols;i++){
+        const tile=document.createElement("div");
+        tile.classList.add("tile");
+        tile.dataset.index=i;
+
+        tile.style.width=tileWidth+"px";
+        tile.style.height=tileHeight+"px";
+        tile.style.backgroundSize=`${width}px ${height}px`;
+        tile.style.backgroundPosition=
+            `${-(i%cols)*tileWidth}px ${-Math.floor(i/cols)*tileHeight}px`;
+
+        tile.addEventListener("pointerdown",()=>{
+            dragged=tile;
+            tile.classList.add("dragging");
+        });
+
+        tile.addEventListener("pointerup",function(e){
+            tile.classList.remove("dragging");
+            const dropTarget=document.elementFromPoint(e.clientX,e.clientY);
+
+            if(dropTarget && dropTarget.classList.contains("tile") && dragged!==dropTarget){
+                let tempPos=dragged.style.backgroundPosition;
+                let tempIndex=dragged.dataset.index;
+
+                dragged.style.backgroundPosition=dropTarget.style.backgroundPosition;
+                dragged.dataset.index=dropTarget.dataset.index;
+
+                dropTarget.style.backgroundPosition=tempPos;
+                dropTarget.dataset.index=tempIndex;
+
+                checkWin();
+            }
+            dragged=null;
+        });
+
+        puzzle.appendChild(tile);
+    }
+
+    shuffle();
+};
+
+function shuffle(){
+    for(let i=puzzle.children.length;i>=0;i--){
+        puzzle.appendChild(puzzle.children[Math.random()*i|0]);
+    }
+}
+
+function checkWin(){
+    const tiles=[...puzzle.children];
+    for(let i=0;i<tiles.length;i++){
+        if(tiles[i].dataset.index!=i) return;
+    }
+    document.getElementById("gameScreen").style.display="none";
+    document.getElementById("final").style.display="block";
+}
+
+// Hearts animation
+const heartsContainer = document.querySelector('.hearts');
+function createHeart() {
     const heart = document.createElement('div');
     heart.classList.add('heart');
     heart.style.left = Math.random() * 100 + 'vw';
@@ -134,20 +284,11 @@
     heartsContainer.appendChild(heart);
 
     setTimeout(() => {
-      heart.remove();
+        heart.remove();
     }, 10000);
-  }
+}
 
-  setInterval(createHeart, 300);
-
-  // Puzzle reveal
-  const button = document.querySelector('.puzzle-btn');
-  const message = document.querySelector('.message');
-
-  button.addEventListener('click', () => {
-    button.style.display = 'none';
-    message.style.display = 'block';
-  });
+setInterval(createHeart, 300);
 </script>
 </body>
 </html>
