@@ -36,7 +36,7 @@ body{
     max-width:500px;
     background:white;
     border-radius:25px;
-    padding:40px 25px;
+    padding:35px 20px;
     box-shadow:0 20px 50px rgba(0,0,0,0.12);
     text-align:center;
     color:#000;
@@ -44,19 +44,21 @@ body{
 
 .title{
     font-family:'Cassandra';
-    font-size:2.6rem;
+    font-size:2.4rem;
     margin-bottom:15px;
+    color:#000;
 }
 
 .subtitle{
     font-size:0.95rem;
     line-height:1.6;
-    margin-bottom:30px;
+    margin-bottom:25px;
+    color:#000;
 }
 
 #puzzle{
     display:grid;
-    gap:4px;
+    gap:3px;
     margin:0 auto 10px auto;
 }
 
@@ -80,13 +82,15 @@ body{
 
 .big-love{
     font-family:'Cassandra';
-    font-size:3rem;
+    font-size:2.8rem;
     margin-bottom:15px;
+    color:#000;
 }
 
 .promise{
     font-size:0.95rem;
     line-height:1.8;
+    color:#000;
 }
 
 @keyframes fadeIn{
@@ -155,7 +159,9 @@ img.src="us.jpg";
 
 img.onload=function(){
     const ratio=img.width/img.height;
-    const width=window.innerWidth*0.92;
+
+    // Reduced size for better mobile fit
+    const width=Math.min(window.innerWidth*0.8,320);
     const height=width/ratio;
 
     puzzle.style.width=width+"px";
@@ -184,6 +190,7 @@ img.onload=function(){
         tile.addEventListener("pointerup",function(e){
             tile.classList.remove("dragging");
             const dropTarget=document.elementFromPoint(e.clientX,e.clientY);
+
             if(dropTarget && dropTarget.classList.contains("tile") && dragged!==dropTarget){
                 let tempPos=dragged.style.backgroundPosition;
                 let tempIndex=dragged.dataset.index;
